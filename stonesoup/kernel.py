@@ -42,3 +42,13 @@ class SquaredExponentialKernel(Kernel):
     def __call__(self, state1, state2, *args, **kwargs):
         dt = state2.timestamp - state1.timestamp
         return np.exp(-dt.total_seconds() ** 2 / (2 * self.l ** 2))
+
+    class ExponentialKernel(Kernel):
+        l: float = Property(doc="Length scale")
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+        def __call__(self, state1, state2, *args, **kwargs):
+            dt = state2.timestamp - state1.timestamp
+            return np.exp(-np.abs(dt.total_seconds()) / (2 * self.l))
